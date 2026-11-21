@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartRun FTMS Pro — تحكّم ذكي في مشايتك الكهربائية</title>
+<style>
+  :root {
+    --bg: #040814;
+    --card: rgba(15, 23, 42, 0.88);
+    --card2: rgba(10, 16, 32, 0.92);
+    --border: rgba(56, 189, 248, 0.24);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --cyan: #38bdf8;
+    --green: #10b981;
+    --violet: #a855f7;
+    --pink: #ec4899;
+    --amber: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: radial-gradient(circle at 18% 0%, #172554 0%, #070d1f 42%, #03060f 100%);
+    color: var(--text);
+    line-height: 1.65;
+    padding-bottom: 84px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 14px 14px 40px; }
+
+  /* Sticky Top Bar */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 14px; border-radius: 16px;
+    background: rgba(11, 18, 34, 0.86); backdrop-filter: blur(14px);
+    border: 1px solid var(--border); position: sticky; top: 8px; z-index: 60;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+  }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 950; font-size: 17px; }
+  .brand-ico {
+    width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #0284c7, #7c3aed, #ec4899); font-size: 18px;
+  }
+  .grad {
+    background: linear-gradient(90deg, #38bdf8, #a855f7, #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .lsw {
+    display: flex; gap: 4px; background: #050a16; padding: 3px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .lbtn {
+    border: none; border-radius: 7px; padding: 5px 10px; font-size: 12px; font-weight: 800;
+    cursor: pointer; background: transparent; color: var(--muted);
+  }
+  .lbtn.on { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; }
+  .nav-cta {
+    text-decoration: none; padding: 7px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 900;
+    background: linear-gradient(135deg, #059669, #10b981); color: #fff; white-space: nowrap;
+  }
+
+  /* Hero */
+  .hero { text-align: center; padding: 26px 6px 18px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px;
+    background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.45);
+    color: #6ee7b7; font-size: 12px; font-weight: 800; margin-bottom: 14px;
+  }
+  .hero h1 { font-size: clamp(26px, 5.4vw, 42px); font-weight: 950; line-height: 1.24; margin-bottom: 12px; }
+  .hero p { color: #cbd5e1; font-size: 15px; max-width: 640px; margin: 0 auto 20px; }
+  .hero-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .btn-main {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 24px; border-radius: 14px; text-decoration: none; font-weight: 950; font-size: 15.5px;
+    background: linear-gradient(135deg, #059669, #10b981); color: #fff;
+    box-shadow: 0 10px 28px rgba(16,185,129,0.38);
+  }
+  .btn-sec {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 20px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14.5px;
+    background: rgba(30,41,59,0.85); color: #e2e8f0; border: 1px solid rgba(56,189,248,0.35);
+  }
+
+  /* Visual Phone & Orb Mockup */
+  .showcase {
+    display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap;
+    margin: 6px auto 26px;
+  }
+  .phone-mock {
+    width: 265px; border-radius: 26px; padding: 14px;
+    background: linear-gradient(180deg, #0f172a, #060b18);
+    border: 2px solid rgba(56,189,248,0.45); box-shadow: 0 20px 46px rgba(0,0,0,0.65);
+    text-align: center;
+  }
+  .pm-top { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
+  .pm-gauge {
+    padding: 14px 10px; border-radius: 18px; margin-bottom: 10px;
+    background: radial-gradient(circle, rgba(14,165,233,0.22), rgba(15,23,42,0.85));
+    border: 1px solid rgba(56,189,248,0.35);
+  }
+  .pm-spd {
+    font-size: 46px; font-weight: 950; line-height: 1;
+    background: linear-gradient(90deg, #38bdf8, #c084fc, #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .pm-voice {
+    font-size: 11.5px; font-weight: 800; color: #6ee7b7; padding: 7px 10px; border-radius: 10px;
+    background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.35);
+  }
+  .orb-mock {
+    width: 190px; height: 190px; position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .orb-core {
+    width: 68px; height: 68px; border-radius: 50%; background: #0f172a;
+    border: 3px solid #00E676; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 0 22px rgba(0,230,118,0.45); z-index: 2;
+  }
+  .orb-core b { font-size: 18px; line-height: 1; }
+  .orb-core span { font-size: 9px; color: #38bdf8; font-weight: 800; }
+  .orb-dot {
+    position: absolute; width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900;
+    color: #fff; border: 2px solid rgba(255,255,255,0.85); box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .orb-caption {
+    width: 100%; text-align: center; font-size: 12px; color: #f9a8d4; font-weight: 800; margin-top: 4px;
+  }
+
+  /* Section Titles */
+  .sec { margin-top: 26px; }
+  .sec-h { font-size: 21px; font-weight: 950; margin-bottom: 14px; text-align: center; }
+
+  /* Features Grid */
+  .fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .fcard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px;
+  }
+  .fcard .fi { font-size: 26px; margin-bottom: 6px; }
+  .fcard h3 { font-size: 15px; font-weight: 900; margin-bottom: 4px; color: #f8fafc; }
+  .fcard p { font-size: 13px; color: var(--muted); }
+
+  /* Comparison Card */
+  .cmp-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 16px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { padding: 11px 10px; border-bottom: 1px solid rgba(148,163,184,0.16); text-align: start; }
+  th { color: #7dd3fc; font-weight: 900; }
+  .yes { color: #34d399; font-weight: 800; }
+  .no { color: #f87171; font-weight: 700; }
+
+  /* Guarantee Banner */
+  .guar {
+    margin-top: 20px; padding: 16px 18px; border-radius: 18px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.16), rgba(14,165,233,0.14));
+    border: 1.5px solid rgba(16,185,129,0.48); display: flex; align-items: center; gap: 12px;
+  }
+  .guar b { color: #6ee7b7; font-size: 15px; display: block; }
+  .guar span { font-size: 13px; color: #e2e8f0; }
+
+  /* Offer & Order Form */
+  .order-box {
+    margin-top: 26px; background: var(--card2); border: 2px solid #10b981;
+    border-radius: 24px; padding: 22px 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .price-wrap { text-align: center; margin-bottom: 14px; }
+  .price-tag { font-size: 13.5px; font-weight: 900; color: #fde047; margin-bottom: 4px; }
+  .price-row { display: flex; align-items: baseline; justify-content: center; gap: 12px; }
+  .p-now { font-size: 40px; font-weight: 950; color: #34d399; }
+  .p-old { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
+  .gift-strip {
+    background: linear-gradient(135deg, rgba(124,58,237,0.24), rgba(236,72,153,0.24));
+    border: 1.5px solid rgba(236,72,153,0.55); border-radius: 14px; padding: 12px 14px;
+    margin: 12px 0 18px; display: flex; align-items: center; gap: 10px;
+  }
+  .gift-strip b { color: #f9a8d4; font-size: 14.5px; display: block; }
+  .gift-strip span { font-size: 12.5px; color: #e2e8f0; }
+  .fg { margin-bottom: 12px; }
+  .fg label { display: block; font-size: 13px; font-weight: 800; color: #cbd5e1; margin-bottom: 5px; }
+  .fg input, .fg select {
+    width: 100%; padding: 13px 12px; border-radius: 12px;
+    border: 1.5px solid rgba(148,163,184,0.32); background: #050a16; color: #fff; font-size: 15px;
+  }
+  .fg input:focus, .fg select:focus { outline: none; border-color: #38bdf8; }
+  .wa-submit {
+    width: 100%; padding: 16px; border-radius: 15px; border: none; font-size: 16.5px; font-weight: 950;
+    color: #fff; cursor: pointer; background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 12px 30px rgba(16,185,129,0.42); margin-top: 4px;
+  }
+  .steps-mini {
+    margin-top: 14px; font-size: 12.5px; color: #cbd5e1; background: rgba(15,23,42,0.8);
+    padding: 11px 13px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* FAQ */
+  .faq details {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 13px 15px; margin-bottom: 9px;
+  }
+  .faq summary { cursor: pointer; font-weight: 800; font-size: 14px; color: #f8fafc; }
+  .faq p { font-size: 13px; color: #cbd5e1; margin-top: 8px; }
+
+  /* Floating Bottom Sticky Bar (Mobile) */
+  .sticky-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 70;
+    background: rgba(7, 13, 25, 0.94); backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(16,185,129,0.45); padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .sb-price b { color: #34d399; font-size: 18px; display: block; line-height: 1.1; }
+  .sb-price span { font-size: 11px; color: #f9a8d4; font-weight: 700; }
+  .sb-btn {
+    text-decoration: none; padding: 11px 20px; border-radius: 12px; font-weight: 950; font-size: 14px;
+    background: linear-gradient(135deg, #059669, #10b981); color: #fff; white-space: nowrap;
+  }
+  .footer { text-align: center; margin-top: 28px; font-size: 12px; color: var(--muted); }
+
+  /* Live Video / Animated Demo Showcase */
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
+  .demo-card {
+    background: var(--card2); border: 1.5px solid rgba(56,189,248,0.34); border-radius: 22px;
+    padding: 16px; text-align: center; box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+  }
+  .demo-card.pink-b { border-color: rgba(236,72,153,0.45); }
+  .demo-stage {
+    position: relative; height: 245px; border-radius: 16px; overflow: hidden;
+    background: radial-gradient(circle at 50% 45%, #16233f 0%, #060b18 75%);
+    border: 1px solid rgba(255,255,255,0.08); margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-stage video {
+    width: 100%; height: 100%; object-fit: cover; display: none; border-radius: 15px;
+  }
+  .demo-title { font-size: 15.5px; font-weight: 950; margin-bottom: 4px; color: #f8fafc; }
+  .demo-sub { font-size: 12.5px; color: #94a3b8; }
+
+  /* Animated Circular Pad Demo */
+  .sim-pad-wrap { position: relative; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; }
+  .sim-orb {
+    width: 66px; height: 66px; border-radius: 50%; background: #0f172a; border: 3px solid #00E676;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 4; cursor: pointer; box-shadow: 0 0 22px rgba(0,230,118,0.45); transition: transform .2s;
+  }
+  .sim-orb b { font-size: 20px; color: #fff; line-height: 1; }
+  .sim-orb span { font-size: 9px; color: #38bdf8; font-weight: 800; }
+  .sim-dot {
+    position: absolute; width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 950;
+    color: #fff; border: 2px solid rgba(255,255,255,0.88); text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .35s, box-shadow .2s;
+    opacity: 0; transform: scale(0.2); cursor: pointer;
+  }
+  .sim-pad-wrap.open .sim-dot { opacity: 1; transform: scale(1); }
+  .sim-dot.hit { box-shadow: 0 0 0 4px #ffff00, 0 0 18px #ffff00; transform: scale(1.2) !important; }
+  .sim-badge {
+    position: absolute; top: 8px; right: 8px; font-size: 10.5px; font-weight: 800;
+    padding: 3px 9px; border-radius: 999px; background: rgba(16,185,129,0.2); color: #6ee7b7;
+    border: 1px solid rgba(16,185,129,0.45); z-index: 6;
+  }
+
+  /* Animated Hand Gesture Demo */
+  .sim-hand-wrap { width: 100%; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .sim-cam-bar {
+    font-size: 11px; font-weight: 800; color: #7dd3fc; background: rgba(56,189,248,0.14);
+    border: 1px solid rgba(56,189,248,0.35); padding: 4px 12px; border-radius: 999px;
+  }
+  .sim-spd-big {
+    font-size: 50px; font-weight: 950; line-height: 1;
+    background: linear-gradient(90deg, #38bdf8, #c084fc, #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    transition: transform .2s;
+  }
+  .sim-spd-big.pop { transform: scale(1.14); }
+  .sim-hand-track {
+    position: relative; width: 190px; height: 48px; border-radius: 999px;
+    background: rgba(15,23,42,0.85); border: 1px dashed rgba(56,189,248,0.4);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .sim-hand-ico {
+    position: absolute; font-size: 30px; transition: left .65s ease-in-out; left: 78px;
+  }
+  .sim-dir-lbl { font-size: 12px; font-weight: 900; min-height: 18px; color: #34d399; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="brand">
+      <div class="brand-ico">🏃</div>
+      <span class="grad">SmartRun Pro</span>
+    </div>
+    <div class="nav-right">
+      <div class="lsw">
+        <button type="button" class="lbtn on" id="bAr" onclick="setL('ar')">🇩🇿 عربي</button>
+        <button type="button" class="lbtn" id="bFr" onclick="setL('fr')">🇫🇷 FR</button>
+      </div>
+      <a href="#orderForm" class="nav-cta" id="navCta">📲 اطلب الآن</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="pill" id="hPill">📡 متوافق مع جميع مشايات البلوتوث FTMS (0x1826)</div>
+    <h1 id="hTitle">حوّل مشايتك الكهربائية إلى <span class="grad">مدرّب ذكي بالصوت</span> بدون اشتراك شهري</h1>
+    <p id="hSub">تحكّم في السرعة بصوتك أو بتمرير اليد، واستمتع بـ 60 برنامجاً عالمياً وخطط حرق الدهون لـ 4 أسابيع — دفعة واحدة مدى الحياة + هدية تطبيق الكرة العائمة فوق YouTube.</p>
+    <div class="hero-btns">
+      <a href="#orderForm" class="btn-main" id="hBtn1">📲 اطلب الآن — 1,900 دج مدى الحياة</a>
+      <a href="#features" class="btn-sec" id="hBtn2">✨ اكتشف المزايا</a>
+    </div>
+
+  </section>
+
+  <!-- Dual Live Video / Interactive Animated Demos -->
+  <section class="sec" id="liveDemos">
+    <h2 class="sec-h" id="demoSecTitle">🎬 شاهد التطبيقين أثناء العمل</h2>
+    <div class="demo-grid">
+      <!-- Demo 1: Circular Floating Pad -->
+      <div class="demo-card pink-b">
+        <div class="demo-stage" id="stagePad">
+          <span class="sim-badge" id="demoPadBadge">▶ عرض حي</span>
+          <video id="vidPad" src="demo_pad.mp4" autoplay loop muted playsinline></video>
+          <div class="sim-pad-wrap" id="simPadWrap">
+            <div class="sim-orb" id="simOrb" title="Tap">
+              <b id="simPadSpd">6.0</b>
+              <span>km/h</span>
+            </div>
+          </div>
+        </div>
+        <div class="demo-title" id="demoPadT">🕹️ الكرة العائمة SmartRun Pad (هدية)</div>
+        <div class="demo-sub" id="demoPadS">لمسة واحدة تفتح الدائرة الملونة لاختيار السرعة فوراً فوق YouTube وKinomap.</div>
+      </div>
+
+      <!-- Demo 2: Camera Hand Gesture -->
+      <div class="demo-card">
+        <div class="demo-stage" id="stageHand">
+          <span class="sim-badge" id="demoHandBadge">▶ عرض حي</span>
+          <video id="vidHand" src="demo_hand.mp4" autoplay loop muted playsinline></video>
+          <div class="sim-hand-wrap" id="simHandWrap">
+            <div class="sim-cam-bar" id="simCamLbl">📷 كاميرا تمرير اليد نشطة</div>
+            <div class="sim-spd-big" id="simHandSpd">6.0</div>
+            <div class="sim-hand-track">
+              <span class="sim-hand-ico" id="simHandIco">👋</span>
+            </div>
+            <div class="sim-dir-lbl" id="simHandDir">يمين = +0.5 km/h</div>
+          </div>
+        </div>
+        <div class="demo-title" id="demoHandT">👋 تغيير السرعة بتمرير اليد (بدون لمس)</div>
+        <div class="demo-sub" id="demoHandS">مرّر يدك أمام الكاميرا يميناً لزيادة السرعة (+0.5) ويساراً لخفضها (−0.5) أثناء الجري.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Features -->
+  <section class="sec" id="features">
+    <h2 class="sec-h" id="fSecTitle">🚀 كل ما تحتاجه لتمرين احترافي وممتع</h2>
+    <div class="fgrid" id="fGrid"></div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="sec">
+    <h2 class="sec-h" id="cSecTitle">⚖️ مقارنة سريعة مع التطبيقات العالمية</h2>
+    <div class="cmp-card">
+      <table>
+        <thead>
+          <tr>
+            <th id="cH1">الميزة</th>
+            <th id="cH2">SmartRun Pro</th>
+            <th id="cH3">تطبيقات عالمية (Kinomap...)</th>
+          </tr>
+        </thead>
+        <tbody id="cBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Zero-Risk Guarantee -->
+  <div class="guar">
+    <div style="font-size:30px">🛡️</div>
+    <div>
+      <b id="gBTitle">ضمان التوافق قبل الدفع 100%</b>
+      <span id="gBDesc">نتحقق معك عبر واتساب أن مشايتك تدعم بلوتوث FTMS (مثل Kettler، Reebok، ProFitness، Horizon وغيرها) وتستلم التفعيل الفوري الخاص بهاتفك مدى الحياة.</span>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <section class="order-box" id="orderForm">
+    <div class="price-wrap">
+      <div class="price-tag" id="oTag">🔥 عرض الإطلاق الخاص بالجزائر — دفعة واحدة مدى الحياة</div>
+      <div class="price-row">
+        <span class="p-now" id="oNow">1,900 دج</span>
+        <span class="p-old" id="oOld">2,900 دج</span>
+      </div>
+    </div>
+
+    <div class="gift-strip">
+      <div style="font-size:28px">🎁</div>
+      <div>
+        <b id="gTitle">هدية مجانية مع كل طلب: تطبيق SmartRun Pad!</b>
+        <span id="gDesc">الكرة الدائرية الملونة التي تطفو فوق YouTube وNetflix وKinomap لتغيير السرعة بلمسة واحدة دون إغلاق الفيديو.</span>
+      </div>
+    </div>
+
+    <div class="fg">
+      <label id="lName" for="iName">الاسم الكامل *</label>
+      <input id="iName" type="text" placeholder="مثال: أحمد بن علي">
+    </div>
+    <div class="fg">
+      <label id="lWil" for="iWil">الولاية *</label>
+      <select id="iWil"></select>
+    </div>
+    <div class="fg">
+      <label id="lTm" for="iTm">نوع أو موديل المشاية (اختياري)</label>
+      <input id="iTm" type="text" placeholder="مثال: Kettler / Reebok / ProFitness...">
+    </div>
+    <div class="fg">
+      <label id="lPay" for="iPay">طريقة الدفع المفضلة</label>
+      <select id="iPay">
+        <option value="BaridiMob">BaridiMob</option>
+        <option value="CCP">CCP</option>
+      </select>
+    </div>
+    <button type="button" class="wa-submit" id="waBtn" onclick="sendOrder()">📲 تأكيد الطلب عبر واتساب الآن (1,900 دج)</button>
+    <div class="steps-mini" id="oSteps">
+      ⚡ <b>كيف يتم التسليم؟</b> 1) أرسل طلبك على واتساب ← 2) نرسل لك التطبيقين مع معلومات BaridiMob/CCP ← 3) ترسل رمز جهازك ووصل الدفع ← 4) تستلم كود التفعيل الدائم خلال دقائق!
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec faq">
+    <h2 class="sec-h" id="qSecTitle">❓ أسئلة شائعة</h2>
+    <div id="faqList"></div>
+  </section>
+
+  <footer class="footer" id="footTxt">SmartRun FTMS Pro Algeria • تواصل مباشر عبر واتساب: +213 794 65 95 36</footer>
+</div>
+
+<!-- Sticky Mobile CTA -->
+<div class="sticky-bar">
+  <div class="sb-price">
+    <b id="sbPrice">1,900 دج مدى الحياة</b>
+    <span id="sbGift">+ 🎁 SmartRun Pad هدية</span>
+  </div>
+  <a href="#orderForm" class="sb-btn" id="sbBtn">📲 اطلب الآن</a>
+</div>
+
+<script>
+const WA_NUMBER = '213794659536';
+const WILAYAS = [
+  '01 Adrar','02 Chlef','03 Laghouat','04 Oum El Bouaghi','05 Batna','06 Béjaïa','07 Biskra','08 Béchar',
+  '09 Blida','10 Bouira','11 Tamanrasset','12 Tébessa','13 Tlemcen','14 Tiaret','15 Tizi Ouzou','16 Alger',
+  '17 Djelfa','18 Jijel','19 Sétif','20 Saïda','21 Skikda','22 Sidi Bel Abbès','23 Annaba','24 Guelma',
+  '25 Constantine','26 Médéa','27 Mostaganem','28 M\'Sila','29 Mascara','30 Ouargla','31 Oran','32 El Bayadh',
+  '33 Illizi','34 Bordj Bou Arréridj','35 Boumerdès','36 El Tarf','37 Tindouf','38 Tissemsilt','39 El Oued',
+  '40 Khenchela','41 Souk Ahras','42 Tipaza','43 Mila','44 Aïn Defla','45 Naâma','46 Aïn Témouchent',
+  '47 Ghardaïa','48 Relizane','49 Timimoun','50 Bordj Badji Mokhtar','51 Ouled Djellal','52 Béni Abbès',
+  '53 In Salah','54 In Guezzam','55 Touggourt','56 Djanet','57 El M\'Ghair','58 El Meniaa'
+];
+const selW = document.getElementById('iWil');
+WILAYAS.forEach(w => { const o = document.createElement('option'); o.value = w; o.textContent = w; selW.appendChild(o); });
+selW.value = '16 Alger';
+
+const T = {
+  ar: {
+    dir: 'rtl',
+    title: 'SmartRun FTMS Pro — تحكّم ذكي في مشايتك الكهربائية',
+    navCta: '📲 اطلب الآن',
+    hPill: '📡 متوافق مع جميع مشايات البلوتوث FTMS (0x1826)',
+    hTitle: 'حوّل مشايتك الكهربائية إلى <span class="grad">مدرّب ذكي بالصوت</span> بدون اشتراك شهري',
+    hSub: 'تحكّم في السرعة بصوتك أو بتمرير اليد، واستمتع بـ 60 برنامجاً عالمياً وخطط حرق الدهون لـ 4 أسابيع — دفعة واحدة مدى الحياة + هدية تطبيق الكرة العائمة فوق YouTube.',
+    hBtn1: '📲 اطلب الآن — 1,900 دج مدى الحياة',
+    hBtn2: '✨ اكتشف المزايا',
+    demoSecTitle: '🎬 شاهد التطبيقين أثناء العمل',
+    demoPadBadge: '▶ عرض حي', demoHandBadge: '▶ عرض حي',
+    demoPadT: '🕹️ الكرة العائمة SmartRun Pad (هدية)',
+    demoPadS: 'لمسة واحدة تفتح الدائرة الملونة لاختيار السرعة فوراً فوق YouTube وKinomap.',
+    demoHandT: '👋 تغيير السرعة بتمرير اليد (بدون لمس)',
+    demoHandS: 'مرّر يدك أمام الكاميرا يميناً لزيادة السرعة (+0.5) ويساراً لخفضها (−0.5) أثناء الجري.',
+    simCamLbl: '📷 كاميرا تمرير اليد نشطة',
+    fSecTitle: '🚀 كل ما تحتاجه لتمرين احترافي وممتع',
+    feats: [
+      ['🎙️', 'تحكّم صوتي ذكي + تدريب صوتي', 'انطق السرعة بالعربية أو الفرنسية أو الإنجليزية (أو "توقف / Stop") لتستجيب المشاية فوراً، مع نطق تنبيهات المراحل.'],
+      ['👋', 'تمرير اليد أمام الكاميرا', 'ارفع أو اخفض سرعة المشاية بتمرير يدك يميناً أو يساراً دون لمس شاشة الهاتف أثناء الجري.'],
+      ['🏆', '60 برنامجاً + 3 خطط لـ 4 أسابيع', 'مكتبة تمارين عالمية جاهزة (حرق دهون، 5 كم، مشي صحي، HIIT) تتكيّف تلقائياً مع أقصى سرعة وميل لمشايتك.'],
+      ['📊', 'إحصائيات + تصدير Strava (.TCX)', 'تتبّع مسافتك الأسبوعية، أرقامك القياسية، وصدّر جلساتك مباشرةً إلى Strava بضغطة واحدة.'],
+      ['🎬', 'سينما YouTube + وضع الجري الكامل', 'شاهد فيديوهات الجري داخل التطبيق أو فعّل وضع الجري الكامل بعدادات عملاقة و3 ثيمات ملونة.'],
+      ['🎁', 'هدية: SmartRun Pad العائم', 'كرة دائرية زاهية تطفو فوق YouTube وNetflix وKinomap لتغيير سرعة المشاية بلمسة واحدة!']
+    ],
+    cSecTitle: '⚖️ مقارنة سريعة مع التطبيقات العالمية',
+    cH1: 'الميزة', cH2: 'SmartRun Pro', cH3: 'تطبيقات عالمية (Kinomap...)',
+    cmp: [
+      ['السعر', '1,900 دج (مرة واحدة مدى الحياة)', '~3,000 دج كل شهر (اشتراك مستمر)', true],
+      ['طريقة الدفع في الجزائر', 'BaridiMob / CCP بسهولة', 'بطاقة Visa دولية فقط', true],
+      ['اللغة العربية والفرنسية', 'عربي + فرنسي + إنجليزي 100%', 'بدون دعم كامل للعربية', true],
+      ['التحكم الصوتي وتمرير اليد', 'مدمج مجاناً في التطبيق', 'غير متوفر', true],
+      ['هدية الكرة العائمة فوق YouTube', 'مشمولة مجاناً (SmartRun Pad)', 'غير متوفرة', true]
+    ],
+    gBTitle: 'ضمان التوافق قبل الدفع 100%',
+    gBDesc: 'نتحقق معك عبر واتساب أن مشايتك تدعم بلوتوث FTMS (مثل Kettler، Reebok، ProFitness، Horizon وغيرها) وتستلم التفعيل الفوري الخاص بهاتفك مدى الحياة.',
+    oTag: '🔥 عرض الإطلاق الخاص بالجزائر — دفعة واحدة مدى الحياة',
+    oNow: '1,900 دج', oOld: '2,900 دج',
+    gTitle: 'هدية مجانية مع كل طلب: تطبيق SmartRun Pad!',
+    gDesc: 'الكرة الدائرية الملونة التي تطفو فوق YouTube وNetflix وKinomap لتغيير السرعة بلمسة واحدة دون إغلاق الفيديو.',
+    lName: 'الاسم الكامل *', pName: 'مثال: أحمد بن علي',
+    lWil: 'الولاية *', lTm: 'نوع أو موديل المشاية (اختياري)', pTm: 'مثال: Kettler / Reebok / ProFitness...',
+    lPay: 'طريقة الدفع المفضلة',
+    waBtn: '📲 تأكيد الطلب عبر واتساب الآن (1,900 دج)',
+    oSteps: '⚡ <b>كيف يتم التسليم؟</b> 1) أرسل طلبك على واتساب ← 2) نرسل لك التطبيقين مع معلومات BaridiMob/CCP ← 3) ترسل رمز جهازك ووصل الدفع ← 4) تستلم كود التفعيل الدائم خلال دقائق!',
+    qSecTitle: '❓ أسئلة شائعة',
+    faqs: [
+      ['هل يوجد اشتراك شهري أو رسوم مخفية؟', 'لا أبداً! تدفع 1,900 دج مرة واحدة فقط وتبقى النسخة مفعّلة على هاتفك مدى الحياة مع هدية SmartRun Pad.'],
+      ['كيف أعرف أن مشايتي متوافقة؟', 'يعمل التطبيق مع أي مشاية تدعم بلوتوث FTMS القياسي (0x1826) مثل Kettler وReebok وProFitness وHorizon وغيرها. يمكنك إرسال اسم مشايتك في الطلب لنتأكد معك قبل الدفع.'],
+      ['ماذا لو حذفت التطبيق وأعدت تثبيته لاحقاً؟', 'يحتفظ هاتفك بنفس رمز الجهاز، لذلك يمكنك إدخال نفس كود التفعيل الذي أرسلناه لك في واتساب وسيعمل معك فوراً من جديد.'],
+      ['هل يعمل التطبيق بدون إنترنت؟', 'نعم! التحكم بالمشاية، الـ 60 برنامجاً، خطط الـ 4 أسابيع، والإحصائيات تعمل كلها بدون إنترنت (الإنترنت مطلوب فقط لفيديوهات YouTube).']
+    ],
+    sbPrice: '1,900 دج مدى الحياة', sbGift: '+ 🎁 SmartRun Pad هدية', sbBtn: '📲 اطلب الآن',
+    footTxt: 'SmartRun FTMS Pro Algeria • تواصل مباشر عبر واتساب: +213 794 65 95 36'
+  },
+  fr: {
+    dir: 'ltr',
+    title: 'SmartRun FTMS Pro — Coach Vocal pour Tapis Roulant',
+    navCta: '📲 Commander',
+    hPill: '📡 Compatible avec tous les tapis Bluetooth FTMS (0x1826)',
+    hTitle: 'Transformez votre tapis roulant en <span class="grad">coach vocal intelligent</span> sans abonnement',
+    hSub: 'Contrôlez la vitesse à la voix ou par geste de la main, profitez de 60 programmes mondiaux et 3 plans 4 semaines — paiement unique à vie + cadeau SmartRun Pad flottant sur YouTube.',
+    hBtn1: '📲 Commander — 1 900 DA à vie',
+    hBtn2: '✨ Voir les fonctions',
+    demoSecTitle: '🎬 Voir les 2 applications en action',
+    demoPadBadge: '▶ Démo Live', demoHandBadge: '▶ Démo Live',
+    demoPadT: '🕹️ Sphère Flottante SmartRun Pad (Offert)',
+    demoPadS: 'Un clic ouvre le cercle coloré pour changer la vitesse au-dessus de YouTube & Kinomap.',
+    demoHandT: '👋 Vitesse par geste de la main (Mains libres)',
+    demoHandS: 'Passez la main devant la caméra à droite (+0.5) ou à gauche (−0.5) en courant.',
+    simCamLbl: '📷 Caméra geste main active',
+    fSecTitle: '🚀 Tout pour des séances pro et motivantes',
+    feats: [
+      ['🎙️', 'Commandes vocales + entraînement vocal', 'Dites simplement le chiffre en français, arabe ou anglais (ou "Stop") pour ajuster la vitesse, avec annonces vocales de séance.'],
+      ['👋', 'Geste de la main devant la caméra', 'Augmentez ou réduisez la vitesse d’un simple geste devant la caméra sans toucher l’écran.'],
+      ['🏆', '60 entraînements + 3 plans 4 semaines', 'Bibliothèque pro prête (Brûle-graisses, 5 km, Marche, HIIT) adaptée automatiquement aux limites de votre tapis.'],
+      ['📊', 'Statistiques + Export Strava (.TCX)', 'Suivez votre objectif hebdomadaire, vos records personnels et exportez vers Strava en un clic.'],
+      ['🎬', 'Cinéma YouTube + Mode Plein Écran', 'Regardez vos vidéos de course en mode flottant ou profitez des grands compteurs avec 3 thèmes visuels.'],
+      ['🎁', 'Cadeau : SmartRun Pad Flottant', 'Une sphère colorée qui flotte sur YouTube, Netflix et Kinomap pour changer la vitesse sans quitter la vidéo !']
+    ],
+    cSecTitle: '⚖️ Comparaison avec les applis internationales',
+    cH1: 'Critère', cH2: 'SmartRun Pro', cH3: 'Applis étrangères (Kinomap...)',
+    cmp: [
+      ['Prix', '1 900 DA (1 seule fois à vie)', '~3 000 DA / mois (abonnement)', true],
+      ['Paiement en Algérie', 'BaridiMob / CCP simplement', 'Carte Visa internationale requise', true],
+      ['Langues', 'Français + Arabe + Anglais 100%', 'Pas de support arabe complet', true],
+      ['Voix & Geste caméra', 'Inclus gratuitement', 'Non disponible', true],
+      ['Cadeau Sphère Flottante', 'SmartRun Pad inclus gratuitement', 'Non disponible', true]
+    ],
+    gBTitle: 'Compatibilité vérifiée avant paiement 100%',
+    gBDesc: 'Nous vérifions ensemble sur WhatsApp que votre tapis supporte Bluetooth FTMS (Kettler, Reebok, ProFitness, Horizon...) puis vous recevez votre activation à vie.',
+    oTag: '🔥 Offre de lancement Algérie — Paiement unique à vie',
+    oNow: '1 900 DA', oOld: '2 900 DA',
+    gTitle: 'Cadeau offert avec chaque commande : SmartRun Pad !',
+    gDesc: 'La sphère colorée flottante au-dessus de YouTube, Netflix et Kinomap pour régler la vitesse en un clic.',
+    lName: 'Nom complet *', pName: 'Ex : Karim Benali',
+    lWil: 'Wilaya *', lTm: 'Marque / Modèle du tapis (optionnel)', pTm: 'Ex : Kettler / Reebok / ProFitness...',
+    lPay: 'Mode de paiement souhaité',
+    waBtn: '📲 Commander sur WhatsApp maintenant (1 900 DA)',
+    oSteps: '⚡ <b>Livraison rapide :</b> 1) Envoyez votre commande sur WhatsApp → 2) Recevez les 2 apps + infos BaridiMob/CCP → 3) Envoyez votre Device ID + reçu → 4) Code d’activation à vie en quelques minutes !',
+    qSecTitle: '❓ Questions fréquentes',
+    faqs: [
+      ['Y a-t-il un abonnement mensuel ?', 'Non ! Vous payez 1 900 DA une seule fois pour une licence à vie sur votre téléphone, avec SmartRun Pad offert.'],
+      ['Mon tapis est-il compatible ?', 'Oui si votre tapis utilise Bluetooth FTMS standard (0x1826) : Kettler, Reebok, ProFitness, Horizon, etc. Indiquez le modèle dans le formulaire pour vérification avant paiement.'],
+      ['Et si je désinstalle puis réinstalle l’application ?', 'Votre téléphone garde le même identifiant : réutilisez simplement votre code d’activation WhatsApp et l’application se réactive immédiatement.'],
+      ['Fonctionne-t-elle hors ligne ?', 'Oui ! Le contrôle FTMS, les 60 programmes, les plans 4 semaines et les stats fonctionnent sans Internet (seul YouTube nécessite une connexion).']
+    ],
+    sbPrice: '1 900 DA à vie', sbGift: '+ 🎁 SmartRun Pad offert', sbBtn: '📲 Commander',
+    footTxt: 'SmartRun FTMS Pro Algeria • Support WhatsApp direct : +213 794 65 95 36'
+  }
+};
+
+let curL = 'ar';
+function setL(l){
+  curL = l;
+  const c = T[l] || T.ar;
+  document.documentElement.lang = l;
+  document.documentElement.dir = c.dir;
+  document.title = c.title;
+  document.getElementById('bAr').classList.toggle('on', l === 'ar');
+  document.getElementById('bFr').classList.toggle('on', l === 'fr');
+  ['navCta','hPill','hSub','hBtn1','hBtn2','demoSecTitle','demoPadBadge','demoHandBadge','demoPadT','demoPadS','demoHandT','demoHandS','simCamLbl','fSecTitle','cSecTitle','cH1','cH2','cH3',
+   'gBTitle','gBDesc','oTag','oNow','oOld','gTitle','gDesc','lName','lWil','lTm','lPay','waBtn','qSecTitle',
+   'sbPrice','sbGift','sbBtn','footTxt'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el && c[id] !== undefined) el.textContent = c[id];
+  });
+  document.getElementById('hTitle').innerHTML = c.hTitle;
+  document.getElementById('oSteps').innerHTML = c.oSteps;
+  document.getElementById('iName').placeholder = c.pName;
+  document.getElementById('iTm').placeholder = c.pTm;
+
+  document.getElementById('fGrid').innerHTML = c.feats.map(f =>
+    '<div class="fcard"><div class="fi">' + f[0] + '</div><h3>' + f[1] + '</h3><p>' + f[2] + '</p></div>'
+  ).join('');
+  document.getElementById('cBody').innerHTML = c.cmp.map(r =>
+    '<tr><td><b>' + r[0] + '</b></td><td class="yes">✓ ' + r[1] + '</td><td class="no">✗ ' + r[2] + '</td></tr>'
+  ).join('');
+  document.getElementById('faqList').innerHTML = c.faqs.map(q =>
+    '<details><summary>' + q[0] + '</summary><p>' + q[1] + '</p></details>'
+  ).join('');
+}
+
+function sendOrder(){
+  const name = (document.getElementById('iName').value || '').trim();
+  const wil = document.getElementById('iWil').value;
+  const tm = (document.getElementById('iTm').value || '').trim() || '-';
+  const pay = document.getElementById('iPay').value;
+  if(!name){
+    alert(curL === 'fr' ? 'Veuillez entrer votre nom complet.' : 'يرجى إدخال اسمك الكامل.');
+    document.getElementById('iName').focus();
+    return;
+  }
+  const text = curL === 'fr'
+    ? ('Bonjour, je souhaite commander SmartRun FTMS Pro (1 900 DA à vie) + cadeau SmartRun Pad :\n'
+      + '• Nom : ' + name + '\n• Wilaya : ' + wil + '\n• Tapis : ' + tm + '\n• Paiement : ' + pay)
+    : ('السلام عليكم، أريد طلب SmartRun FTMS Pro (1,900 دج مدى الحياة) + هدية SmartRun Pad :\n'
+      + '• الاسم: ' + name + '\n• الولاية: ' + wil + '\n• المشاية: ' + tm + '\n• الدفع: ' + pay);
+  window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text), '_blank');
+}
+
+setL('ar');
+
+// ===== Dual Live Video (demo_pad.mp4 / demo_hand.mp4) with Automatic Interactive Animated Fallback =====
+(function(){
+  // 1. If user uploads real demo_pad.mp4 or demo_hand.mp4 next to index.html, automatically display the real video!
+  function hookRealVideo(vidId, simId){
+    const v = document.getElementById(vidId);
+    const sim = document.getElementById(simId);
+    if(!v || !sim) return;
+    v.addEventListener('loadeddata', () => {
+      v.style.display = 'block';
+      sim.style.display = 'none';
+      v.play().catch(()=>{});
+    });
+  }
+  hookRealVideo('vidPad', 'simPadWrap');
+  hookRealVideo('vidHand', 'simHandWrap');
+
+  // 2. Build interactive circular Pad animation (opens 360° ring, taps vibrant speeds, updates live speed)
+  const padWrap = document.getElementById('simPadWrap');
+  const orb = document.getElementById('simOrb');
+  const padSpd = document.getElementById('simPadSpd');
+  if(padWrap && orb){
+    const items = [
+      {l:'2', c:'#00C853', v:'2.0'}, {l:'4', c:'#00E5FF', v:'4.0'}, {l:'6', c:'#2979FF', v:'6.0'},
+      {l:'8', c:'#E040FB', v:'8.0'}, {l:'10', c:'#FFAB00', v:'10.0'}, {l:'12', c:'#FF6D00', v:'12.0'},
+      {l:'14', c:'#FF3D00', v:'14.0'}, {l:'⏹', c:'#DC2626', v:'0.0'}
+    ];
+    const cx = 105, cy = 105, r = 78, half = 17;
+    const dots = [];
+    items.forEach((it, i) => {
+      const ang = (90 + (i + 1) * (360 / items.length)) * Math.PI / 180;
+      const d = document.createElement('div');
+      d.className = 'sim-dot';
+      d.textContent = it.l;
+      d.style.background = it.c;
+      d.style.left = Math.round(cx + r * Math.cos(ang) - half) + 'px';
+      d.style.top = Math.round(cy + r * Math.sin(ang) - half) + 'px';
+      d.onclick = () => {
+        dots.forEach(x => x.classList.remove('hit'));
+        d.classList.add('hit');
+        if(padSpd) padSpd.textContent = it.v;
+      };
+      padWrap.appendChild(d);
+      dots.push({el: d, item: it});
+    });
+    orb.onclick = () => padWrap.classList.toggle('open');
+
+    // Auto-play smooth demo loop (open -> tap 8 -> tap 10 -> close -> repeat)
+    let step = 0;
+    setInterval(() => {
+      if(document.getElementById('vidPad')?.style.display === 'block') return;
+      step = (step + 1) % 6;
+      if(step === 1){ padWrap.classList.add('open'); }
+      else if(step === 2){ dots.forEach(x => x.el.classList.remove('hit')); dots[3].el.classList.add('hit'); padSpd.textContent = '8.0'; }
+      else if(step === 3){ dots.forEach(x => x.el.classList.remove('hit')); dots[4].el.classList.add('hit'); padSpd.textContent = '10.0'; }
+      else if(step === 4){ dots.forEach(x => x.el.classList.remove('hit')); dots[2].el.classList.add('hit'); padSpd.textContent = '6.0'; }
+      else if(step === 5){ dots.forEach(x => x.el.classList.remove('hit')); padWrap.classList.remove('open'); }
+    }, 1150);
+  }
+
+  // 3. Auto-play smooth Hand-Wave Gesture animation (right +0.5 -> right +0.5 -> left -0.5)
+  const hIco = document.getElementById('simHandIco');
+  const hSpd = document.getElementById('simHandSpd');
+  const hDir = document.getElementById('simHandDir');
+  if(hIco && hSpd && hDir){
+    const seq = [
+      { left: '142px', spd: '6.5', ar: '👉 تمرير لليمين (+0.5 km/h)', fr: '👉 Geste droite (+0.5 km/h)', col: '#34d399' },
+      { left: '142px', spd: '7.0', ar: '👉 تمرير لليمين (+0.5 km/h)', fr: '👉 Geste droite (+0.5 km/h)', col: '#34d399' },
+      { left: '16px',  spd: '6.5', ar: '👈 تمرير لليسار (−0.5 km/h)', fr: '👈 Geste gauche (−0.5 km/h)', col: '#38bdf8' },
+      { left: '16px',  spd: '6.0', ar: '👈 تمرير لليسار (−0.5 km/h)', fr: '👈 Geste gauche (−0.5 km/h)', col: '#38bdf8' }
+    ];
+    let hi = 0;
+    setInterval(() => {
+      if(document.getElementById('vidHand')?.style.display === 'block') return;
+      const s = seq[hi % seq.length]; hi++;
+      hIco.style.left = s.left;
+      hSpd.textContent = s.spd;
+      hSpd.classList.add('pop');
+      setTimeout(() => hSpd.classList.remove('pop'), 260);
+      hDir.style.color = s.col;
+      hDir.textContent = (curL === 'fr') ? s.fr : s.ar;
+    }, 1350);
+  }
+})();
+
+</script>
+</body>
+</html>
